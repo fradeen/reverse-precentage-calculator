@@ -78,12 +78,12 @@ function App() {
             />
           </div>
         </div>
-        <div className="flex w-full justify-between">
+        <div className="flex w-full justify-between items-center">
           {
             !!result &&
             <div className="flex gap-2 ">
               <div>
-                <label htmlFor="originalValue" className="font-semibold">original Val: </label>
+                <label htmlFor="originalValue" className="font-semibold">Original Val: </label>
                 <span id="originalValue">{result?.originalNumber}</span>
               </div>
               <div>
@@ -101,7 +101,7 @@ function App() {
               setResultAdded(true)
             }}
             className="border-2 border-gray-500 rounded-lg p-1"
-          >Append to results</button>
+          >Add to results</button>
         </div>
       </div>
       <div className="flex flex-col gap-2 border-2 border-gray-500 rounded-lg p-4 items-center justify-center">
@@ -114,23 +114,23 @@ function App() {
           >Clear results</button>
         </div>
         {results && results.length > 0 &&
-          <table className=" max-h-96 overflow-y-auto">
+          <table className=" max-h-96 overflow-y-auto w-full table-fixed">
             <thead>
               <tr>
-                <th>Origianl Number</th>
-                <th>% Value</th>
-                <th>%</th>
-                <th>total</th>
+                <th className="w-4/12">Original Number</th>
+                <th className="w-3/12">% Value</th>
+                <th className="w-1/12">%</th>
+                <th className="w-4/12">Total</th>
               </tr>
             </thead>
             <tbody>
               {
                 results.map((result, index) => (
                   <tr key={`${result.originalNumber}_${index}`}>
-                    <td>{result.originalNumber}</td>
-                    <td>{result.percentageValue}</td>
-                    <td>{result.percentage}</td>
-                    <td>{result.originalNumber + result.percentageValue}</td>
+                    <td className="text-center">{result.originalNumber}</td>
+                    <td className="text-center">{result.percentageValue}</td>
+                    <td className="text-center">{result.percentage}</td>
+                    <td className="text-center">{result.originalNumber + result.percentageValue}</td>
                   </tr>
                 ))
               }
@@ -141,7 +141,7 @@ function App() {
           !!grandTotal &&
           <div className="flex items-center justify-between gap-2 w-full">
             <div>
-              <label htmlFor="totalOriginalValue" className="font-semibold">∑ original Val: </label>
+              <label htmlFor="totalOriginalValue" className="font-semibold">∑ Original Val: </label>
               <span id="totalOriginalValue">{grandTotal?.originalValueTotal}</span>
             </div>
             <div>
