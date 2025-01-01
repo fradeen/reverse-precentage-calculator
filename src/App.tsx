@@ -1,4 +1,12 @@
 import { useCallback, useMemo, useState } from "react"
+import { ThemeProvider } from "./components/theme-provider"
+import { ModeToggle } from "./components/mode-toggle"
+import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "./components/ui/card"
+import { Label } from "./components/ui/label"
+import { Input } from "./components/ui/input"
+import { Button } from "./components/ui/button"
+import { Plus } from "lucide-react"
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "./components/ui/table"
 
 type Result = {
   originalNumber: number,
@@ -43,119 +51,127 @@ function App() {
     }, { originalValueTotal: 0, total: 0, totalPercentageValue: 0 })
   }, [results, round])
   return (
-    <div className="space-y-4">
-      <h1 className="text-4xl font-semibold">Calculate reverse percentage</h1>
-      <div className="flex flex-col gap-2 border-2 border-gray-500 rounded-lg p-4 items-center justify-center">
-        <div className="flex gap-2">
-          <div>
-            <label htmlFor="number">Number: </label>
-            <input
-              id="number"
-              type="number"
-              value={input}
-              onChange={event => {
-                setInput(Number(event.target.value))
-                if (isResultAdded)
-                  setResultAdded(false)
-              }
-              }
-              className="outline-none p-1 border-2 border-gray-500 focus:border-none rounded-lg focus:ring-2 ring-green-600 dark:bg-gray-800 dark:text-gray-300 transition-all duration-200 ease-in-out"
-            />
-          </div>
-          <div>
-            <label htmlFor="percentage">%: </label>
-            <input
-              id="percentage"
-              type="number"
-              value={percentage}
-              onChange={event => {
-                setPercentage(Number(event.target.value))
-                if (isResultAdded)
-                  setResultAdded(false)
-              }
-              }
-              className="outline-none p-1 border-2 border-gray-500 focus:border-none rounded-lg focus:ring-2 ring-green-600 h-9 w-16 dark:bg-gray-800 dark:text-gray-300 transition-all duration-200 ease-in-out"
-            />
-          </div>
-        </div>
-        <div className="flex w-full justify-between items-center">
-          {
-            !!result &&
-            <div className="flex gap-2 ">
-              <div>
-                <label htmlFor="originalValue" className="font-semibold">Original Val: </label>
-                <span id="originalValue">{result?.originalNumber}</span>
-              </div>
-              <div>
-                <label htmlFor="percentValue" className="font-semibold">% Val: </label>
-                <span id="percentValue">{result?.percentageValue}</span>
-              </div>
+    <ThemeProvider defaultTheme="light" storageKey="vite-ui-theme">
+      <Card className="p-2 relative">
+        <CardHeader>
+          <ModeToggle />
+          <CardTitle><h1 className="text-3xl">Calculate reverse percentage.</h1></CardTitle>
+          <CardDescription>Calculate reverse percentage i.e calculate value before percent addition/subtraction; given value after percent addition/subtraction</CardDescription>
+        </CardHeader>
+        <CardContent className="space-x-2 space-y-2">
+          <div className="flex gap-2">
+            <div>
+              <Label htmlFor="number">Number: </Label>
+              <Input
+                id="number"
+                type="number"
+                value={input}
+                onChange={event => {
+                  setInput(Number(event.target.value))
+                  if (isResultAdded)
+                    setResultAdded(false)
+                }
+                }
+              />
             </div>
-          }
-          <button
-            type="button"
-            disabled={isResultAdded}
-            onClick={() => {
-              if (result && !isResultAdded)
-                setResults(prev => [...prev, result])
-              setResultAdded(true)
-            }}
-            className="border-2 border-gray-500 rounded-lg p-1"
-          >Add to results</button>
-        </div>
-      </div>
-      <div className="flex flex-col gap-2 border-2 border-gray-500 rounded-lg p-4 items-center justify-center">
-        <div className="flex items-center justify-between w-full">
-          <h2 className="text-xl font-semibold">Results</h2>
-          <button
-            type="button"
-            onClick={() => setResults([])}
-            className="border-2 border-gray-500 rounded-lg p-1"
-          >Clear results</button>
-        </div>
+            <div>
+              <Label htmlFor="percentage">%: </Label>
+              <Input
+                id="percentage"
+                type="number"
+                value={percentage}
+                onChange={event => {
+                  setPercentage(Number(event.target.value))
+                  if (isResultAdded)
+                    setResultAdded(false)
+                }
+                }
+              />
+            </div>
+          </div>
+          <div className="flex w-full justify-between items-center">
+            {
+              !!result &&
+              <div className="flex gap-2 ">
+                <div>
+                  <Label htmlFor="originalValue" className="font-semibold">Original Val: </Label>
+                  <span id="originalValue">{result?.originalNumber}</span>
+                </div>
+                <div>
+                  <Label htmlFor="percentValue" className="font-semibold">% Val: </Label>
+                  <span id="percentValue">{result?.percentageValue}</span>
+                </div>
+              </div>
+            }
+            <Button
+              type="button"
+              disabled={isResultAdded}
+              onClick={() => {
+                if (result && !isResultAdded)
+                  setResults(prev => [...prev, result])
+                setResultAdded(true)
+              }}
+              className="space-x-1 space-y-1"
+            ><Plus /><span>Add to results</span></Button>
+          </div>
+        </CardContent>
         {results && results.length > 0 &&
-          <table className=" max-h-96 overflow-y-auto w-full table-fixed">
-            <thead>
-              <tr>
-                <th className="w-4/12">Original Number</th>
-                <th className="w-3/12">% Value</th>
-                <th className="w-1/12">%</th>
-                <th className="w-4/12">Total</th>
-              </tr>
-            </thead>
-            <tbody>
-              {
-                results.map((result, index) => (
-                  <tr key={`${result.originalNumber}_${index}`}>
-                    <td className="text-center">{result.originalNumber}</td>
-                    <td className="text-center">{result.percentageValue}</td>
-                    <td className="text-center">{result.percentage}</td>
-                    <td className="text-center">{result.originalNumber + result.percentageValue}</td>
-                  </tr>
-                ))
-              }
-            </tbody>
-          </table>
+          <CardFooter className="flex-col" >
+            <div className="flex items-center justify-between w-full">
+              <h2 className="text-xl font-semibold">Results</h2>
+              <Button
+                type="button"
+                variant="destructive"
+                onClick={() => {
+                  setResults([])
+                  setResultAdded(false)
+                }
+                }
+              >Clear results</Button>
+            </div>
+            <Table>
+              <TableHeader>
+                <TableRow>
+                  <TableHead className="w-4/12">Original Number</TableHead>
+                  <TableHead className="w-3/12">% Value</TableHead>
+                  <TableHead className="w-1/12">%</TableHead>
+                  <TableHead className="w-4/12">Total</TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                {
+                  results.map((result, index) => (
+                    <TableRow key={`${result.originalNumber}_${index}`}>
+                      <TableCell>{result.originalNumber}</TableCell>
+                      <TableCell>{result.percentageValue}</TableCell>
+                      <TableCell>{result.percentage}</TableCell>
+                      <TableCell>{result.originalNumber + result.percentageValue}</TableCell>
+                    </TableRow>
+                  ))
+                }
+              </TableBody>
+            </Table>
+            {
+              !!grandTotal &&
+              <div className="flex items-center justify-between gap-2 w-full">
+                <div>
+                  <Label htmlFor="totalOriginalValue" className="font-semibold">∑ Original Val: </Label>
+                  <span id="totalOriginalValue">{grandTotal?.originalValueTotal}</span>
+                </div>
+                <div>
+                  <Label htmlFor="totalPercentValue" className="font-semibold">∑ % Val: </Label>
+                  <span id="totalPercentValue">{grandTotal?.totalPercentageValue}</span>
+                </div>
+                <div>
+                  <Label htmlFor="grandTotal" className="font-semibold">∑ : </Label>
+                  <span id="grandTotal">{grandTotal?.total}</span>
+                </div>
+              </div>
+            }
+          </CardFooter>
         }
-        {
-          !!grandTotal &&
-          <div className="flex items-center justify-between gap-2 w-full">
-            <div>
-              <label htmlFor="totalOriginalValue" className="font-semibold">∑ Original Val: </label>
-              <span id="totalOriginalValue">{grandTotal?.originalValueTotal}</span>
-            </div>
-            <div>
-              <label htmlFor="totalPercentValue" className="font-semibold">∑ % Val: </label>
-              <span id="totalPercentValue">{grandTotal?.totalPercentageValue}</span>
-            </div>
-            <div>
-              <label htmlFor="grandTotal" className="font-semibold">∑ : </label>
-              <span id="grandTotal">{grandTotal?.total}</span>
-            </div>
-          </div>
-        }
-      </div>
-    </div>
+      </Card>
+    </ThemeProvider>
   )
 }
 
