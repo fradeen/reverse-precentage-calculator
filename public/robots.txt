@@ -1,2 +1,2 @@
 User-agent: *
-Sitemap: http://localhost:4173/sitemap.xml
+Sitemap: https://reverse-percentage.pages.dev/sitemap.xml
